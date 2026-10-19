@@ -97,4 +97,4 @@ for metric in observed_features shannon simpson; do
         --output-path "/data/results_actual/tables/$metric"
 done
 
-python3 16s-gut-microbiome/scripts/08_build_actual_results.py
+python3 scripts/08_build_actual_results.py
