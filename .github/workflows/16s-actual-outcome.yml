@@ -1,0 +1,37 @@
+name: 16S gut microbiome analysis
+# Fresh generated results are uploaded as a workflow artifact; raw data and QIIME artifacts remain ignored.
+
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'params/**'
+      - 'docs/**'
+      - 'README.md'
+      - '.github/workflows/16s-actual-outcome.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: project01-16s-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull QIIME 2
+        run: docker pull quay.io/qiime2/amplicon:2024.10
+      - name: Run actual public sample
+        run: bash scripts/07_actual_public_run.sh
+      - name: Upload verified results
+        uses: actions/upload-artifact@v4
+        with:
+          name: project01-16s-results
+          path: results_actual/
+          if-no-files-found: error
+          retention-days: 90
